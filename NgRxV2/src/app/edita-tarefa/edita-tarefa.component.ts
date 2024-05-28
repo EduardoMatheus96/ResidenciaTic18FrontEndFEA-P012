@@ -1,10 +1,9 @@
-import { Component } from '@angular/core';
+import { tarefasStore } from './../store/tarefa.store';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Store } from '@ngrx/store';
-import { TarefaState } from '../store/tarefa.reducer';
-import { atualizarTarefa } from '../store/tarefa.actions';
 
 @Component({
   selector: 'app-edita-tarefa',
@@ -15,20 +14,16 @@ import { atualizarTarefa } from '../store/tarefa.actions';
 })
 export class EditaTarefaComponent {
   description: string = '';
+  tarefasStore = inject(tarefasStore);
 
   constructor(
     private route: ActivatedRoute,
-    private routes: Router,
-    private store: Store<{ tarefas: TarefaState }>
-  ) {}
+    private routes: Router,)
+  {}
 
   salvar() {
-    this.store.dispatch(
-      atualizarTarefa({
-        id: this.route.snapshot.paramMap.get('id')!,
-        descricao: this.description,
-      })
-    );
+    this.tarefasStore.updateTarefa(this.route.snapshot.paramMap.get('id')!, this.description);
+
     setTimeout(() => {
       this.routes.navigate(['/']);
     }, 100);
